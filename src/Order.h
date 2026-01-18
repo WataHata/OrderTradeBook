@@ -1,0 +1,48 @@
+#pragma once
+#include <stdexcept>
+#include "Types.h"
+
+class Order
+{
+public:
+    Order() = default; 
+
+    Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity)
+        : orderType_{ orderType }
+        , orderId_{ orderId }
+        , side_{ side }
+        , price_{ price }
+        , initialQuantity_{ quantity }
+        , remainingQuantity_{ quantity }
+    {}
+
+    OrderId GetOrderId() const { return orderId_; }
+    Side GetSide() const { return side_; }
+    Price GetPrice() const { return price_; }
+    OrderType GetOrderType() const { return orderType_; }
+    Quantity GetInitialQuantity() const { return initialQuantity_; }
+    Quantity GetRemainingQuantity() const { return remainingQuantity_; }
+    Quantity GetFilledQuantity() const { return GetInitialQuantity() - GetRemainingQuantity(); }
+    bool IsFilled() const { return GetRemainingQuantity() == 0; }
+    
+    void Fill(Quantity quantity)
+    {
+        if (quantity > GetRemainingQuantity())
+        {
+            throw std::logic_error("Order cannot be filled for more than its remaining quantity.");
+        }
+        remainingQuantity_ -= quantity;
+    }
+
+    // Intrusive pointers for the list
+    Order* next_ = nullptr;
+    Order* prev_ = nullptr;
+
+private:
+    OrderType orderType_ = OrderType::GoodTillCancel;
+    OrderId orderId_ = 0;
+    Side side_ = Side::Buy;
+    Price price_ = 0;
+    Quantity initialQuantity_ = 0;
+    Quantity remainingQuantity_ = 0;
+};
