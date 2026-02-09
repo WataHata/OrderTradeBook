@@ -34,7 +34,6 @@ public:
         remainingQuantity_ -= quantity;
     }
 
-    // Intrusive pointers for the list
     Order* next_ = nullptr;
     Order* prev_ = nullptr;
 

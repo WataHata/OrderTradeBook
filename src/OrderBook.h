@@ -80,8 +80,7 @@ private:
     std::unordered_map<OrderId, OrderEntry> orders_;
     Trades trades_;
     
-    // Memory Pool
-    ObjectPool<Order> orderPool_{ 100000 }; 
+    ObjectPool<Order> orderPool_{ 1000000 };
 
     bool CanMatch(Side side, Price price) const
     {
@@ -136,7 +135,6 @@ private:
                     TradeInfo{ ask->GetOrderId(), ask->GetPrice(), quantity }
                 });
                 
-                // IMPORTANT FIX: Check if empty to break inner loop
                 bool bidsEmpty = bids.empty();
                 bool asksEmpty = asks.empty();
 
@@ -167,7 +165,9 @@ private:
 
 public:
     OrderBook() {
-        trades_.reserve(10000); // Reserve space for 10k trades per match cycle
+        trades_.reserve(10000); 
+        orders_.reserve(1200000);
+        orders_.max_load_factor(0.7f);
     }
 
 

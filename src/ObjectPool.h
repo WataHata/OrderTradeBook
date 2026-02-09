@@ -27,7 +27,6 @@ public:
         size_t index = free_indices_.back();
         free_indices_.pop_back();
 
-        // Re-construct object in place
         pool_[index] = T(std::forward<Args>(args)...);
         return &pool_[index];
     }
